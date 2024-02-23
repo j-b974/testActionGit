@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      dockerfile: Docker/Dockerfile
+    image: image_test
+    container_name: test
+    ports:
+      - '80:80'
+    volumes:
+      - .:/var/www/testApp
+    labels: # etiquette que traefik a besoin pour fonctionner
+      - "traefik.enable=true" # traefik monter
+      #
+      # important pour le routage
+      # - "traefik.http.routers.test.rule=Host(`app1.domain.com`)"
+      #
+      # autre manier de router par le prefix du chemin
+      - "traefik.http.routers.test.rule=PathPrefix(`/testApp`)"
+      #
+      # indique les les 2 façon par le nom domain et prefix
+      # - "traefik.http.routers.app1.rule=Host(`votre_domaine.com`) && PathPrefix(`/appjb`)"
+      #
+      # entrer par le networks web et non par le port
+      - "traefik.http.routers.test.entrypoints=webtraefik"
+      - "traefik.http.services.test.loadbalancer.server.port=80"
+    networks:
+      # le meme networks que traefik
+      - webtraefik
+networks:
+  webtraefik:
