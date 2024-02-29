@@ -30,3 +30,4 @@ services:
       - webtraefik
 networks:
   webtraefik:
+    external: true
